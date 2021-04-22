@@ -26,6 +26,7 @@ import mx.tec.mobileproject.dialogs.DevicesAvailablesDialog;
 
 public class DeviceConnectionActivity extends AppCompatActivity {
     BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+    private DevicesAvailablesDialog devicesAvailablesDialog;
 
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
@@ -65,6 +66,7 @@ public class DeviceConnectionActivity extends AppCompatActivity {
 
             if (pairedDevices.size() > 0) {
                 List<String> devices = new ArrayList<>();
+                List<BluetoothDevice> bluetoothDevices = new ArrayList<>();
                 // There are paired devices. Get the name and address of each paired device.
                 for (BluetoothDevice device : pairedDevices) {
                     String deviceName = device.getName();
@@ -72,20 +74,27 @@ public class DeviceConnectionActivity extends AppCompatActivity {
                     Log.d(logger, deviceName);
                     Log.d(logger, deviceHardwareAddress);
 
-
+                    bluetoothDevices.add(device);
                     devices.add(deviceName + " " + deviceHardwareAddress);
                 }
                 if (!devices.isEmpty()) {
-
-                    DevicesAvailablesDialog devicesAvailablesDialog;
-                    devicesAvailablesDialog = new DevicesAvailablesDialog(context, devices);
+                    devicesAvailablesDialog = new DevicesAvailablesDialog(context, devices, deviceName -> {
+                        Intent intent = MainActivity.createIntent(context, deviceName);
+                        startActivity(intent);
+                    });
                     devicesAvailablesDialog.show();
                 }
             }
 
         });
 
-
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (devicesAvailablesDialog != null && devicesAvailablesDialog.isShowing()) {
+            devicesAvailablesDialog.dismiss();
+        }
+    }
 }
