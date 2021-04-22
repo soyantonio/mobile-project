@@ -18,8 +18,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import mx.tec.mobileproject.dialogs.DevicesAvailablesDialog;
 
 public class DeviceConnectionActivity extends AppCompatActivity {
     BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -43,11 +46,7 @@ public class DeviceConnectionActivity extends AppCompatActivity {
         String logger = "connection.activity";
         setContentView(R.layout.activity_device_connection);
         int REQUEST_ENABLE_BT = 1;
-
-        ListView pairedList =  findViewById(R.id.pairedDevicesList);
-        ArrayAdapter<String> adapter = new ArrayAdapter(this, R.layout.bluetooth_item);
-        pairedList.setAdapter(adapter);
-
+        Context context = this;
 
         ((Button) findViewById(R.id.searchButton)).setOnClickListener(v -> {
             if (bluetoothAdapter == null) {
@@ -65,6 +64,7 @@ public class DeviceConnectionActivity extends AppCompatActivity {
             Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
 
             if (pairedDevices.size() > 0) {
+                List<String> devices = new ArrayList<>();
                 // There are paired devices. Get the name and address of each paired device.
                 for (BluetoothDevice device : pairedDevices) {
                     String deviceName = device.getName();
@@ -73,7 +73,13 @@ public class DeviceConnectionActivity extends AppCompatActivity {
                     Log.d(logger, deviceHardwareAddress);
 
 
-                    adapter.add(deviceName + " " + deviceHardwareAddress);
+                    devices.add(deviceName + " " + deviceHardwareAddress);
+                }
+                if (!devices.isEmpty()) {
+
+                    DevicesAvailablesDialog devicesAvailablesDialog;
+                    devicesAvailablesDialog = new DevicesAvailablesDialog(context, devices);
+                    devicesAvailablesDialog.show();
                 }
             }
 
