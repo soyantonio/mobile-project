@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">MobileProject</string>
+    <string name="app_name_title">El carrito 🤘</string>
+    <string name="connection_status">Estado: Carrito Desconectado 😔</string>
 </resources>
