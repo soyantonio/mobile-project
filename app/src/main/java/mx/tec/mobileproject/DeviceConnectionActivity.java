@@ -75,7 +75,7 @@ public class DeviceConnectionActivity extends AppCompatActivity {
                     Log.d(logger, deviceHardwareAddress);
 
                     bluetoothDevices.add(device);
-                    devices.add(deviceName + " " + deviceHardwareAddress);
+                    devices.add(deviceName + "&" + deviceHardwareAddress);
                 }
                 if (!devices.isEmpty()) {
                     devicesAvailablesDialog = new DevicesAvailablesDialog(context, devices, deviceName -> {

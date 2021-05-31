@@ -1,5 +1,9 @@
 <resources>
+    <string name="api_url"></string>
+
     <string name="app_name">MobileProject</string>
     <string name="app_name_title">El carrito 🤘</string>
     <string name="connection_status">Estado: Carrito Desconectado 😔</string>
+    <string name="login_succesfuk">Hola %1$s! 😃</string>
+    <string name="login_error">Hubo un error tratando de iniciar sesion</string>
 </resources>
