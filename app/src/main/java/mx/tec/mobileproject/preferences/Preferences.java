@@ -9,6 +9,7 @@ public class Preferences {
 
     private static final String TIME_CONNECTED = "TIME_CONNECTED";
     private static final String USER_NAME = "USER_NAME";
+    private static final String USER_EMAIL = "USER_EMAIL";
 
     public Preferences(Context context) {
         this.context = context;
