@@ -26,14 +26,14 @@ public class Preferences {
         return PreferenceManager.getDefaultSharedPreferences(context).getString(TOKEN_FIREBASE, "");
     }
 
-    public void setTimeConnected(String timeConnected) {
+    public void setTimeConnected(int timeConnected) {
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
-        editor.putString(TIME_CONNECTED, timeConnected);
+        editor.putInt(TIME_CONNECTED, timeConnected);
         editor.apply();
     }
 
-    public String getTimeConnected() {
-        return PreferenceManager.getDefaultSharedPreferences(context).getString(TIME_CONNECTED, "00:00");
+    public int getTimeConnected() {
+        return PreferenceManager.getDefaultSharedPreferences(context).getInt(TIME_CONNECTED, 0);
     }
 
     public void setUserName(String userName) {

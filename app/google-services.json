@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "462928686846",
+    "firebase_url": "https://devices-mobile-project-default-rtdb.firebaseio.com",
+    "project_id": "devices-mobile-project",
+    "storage_bucket": "devices-mobile-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:462928686846:android:a9c48d3daee16ffaf8ffaf",
+        "android_client_info": {
+          "package_name": "mx.tec.mobileproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "462928686846-8u4fj8er6840i7b3ctcimvt9gam02kdb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBy8Q6aaO2_g6tmF9f7RWWZqlQSxyhtt-s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "462928686846-8u4fj8er6840i7b3ctcimvt9gam02kdb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

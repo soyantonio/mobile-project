@@ -8,7 +8,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="cyan">#00ffff</color>
+    <color name="red">#FF0000</color>
     <color name="ales_color">#6495ED</color>
     <color name="ales_color_darks">#4881ea</color>
     <color name="ales_color_darks_darks">#76a0ef</color>
+    <color name="little_gray">#C3C3C3</color>
 </resources>

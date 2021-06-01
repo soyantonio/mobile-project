@@ -1,9 +1,25 @@
 <resources>
-    <string name="api_url"></string>
-
     <string name="app_name">MobileProject</string>
     <string name="app_name_title">El carrito 🤘</string>
-    <string name="connection_status">Estado: Carrito Desconectado 😔</string>
-    <string name="login_succesfuk">Hola %1$s! 😃</string>
+    <string name="connection_status_off">Estado: Carrito Desconectado 😔</string>
+    <string name="connection_status_on">Estado: Carrito Conectado 😎</string>
+    <string name="login_successful">Hola %1$s! 😃</string>
     <string name="login_error">Hubo un error tratando de iniciar sesion</string>
+    <string name="user_name">Nombre de usuario</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="sign_up">Registrarse</string>
+    <string name="new_user"><u>Usuario nuevo</u></string>
+    <string name="login">Iniciar sesion</string>
+    <string name="close">Cerrar</string>
+    <string name="forward">Adelante</string>
+    <string name="back">Atras</string>
+    <string name="left">Izquierda</string>
+    <string name="right">Derecha</string>
+    <string name="stop">Alto</string>
+    <string name="search_car">Buscar Carrito</string>
+    <string name="logout"><u>Cerrar Sesion</u></string>
+    <string name="car_state">Estado: %1$s</string>
+    <string name="car_timer">Tiempo conectado %1$s:%2$s</string>
+    <string name="car_location">Latitud: %1$s Longitud: %2$s</string>
 </resources>

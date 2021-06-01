@@ -1,17 +1,28 @@
 package mx.tec.mobileproject;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.ParcelUuid;
+import android.text.Html;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
@@ -20,16 +31,24 @@ import android.widget.Toast;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.security.Provider;
 import java.util.Set;
 import java.util.UUID;
 
-public class MainActivity extends AppCompatActivity {
+import mx.tec.mobileproject.preferences.Preferences;
+
+public class MainActivity extends AppCompatActivity implements LocationListener {
     private static final String EXTRA_DEVICE = "EXTRA_DEVICE";
     private static final String TAG = "main.activity";
 
+    private final Preferences preferences = new Preferences(this);
+    private LocationManager locationManager;
+    private final String provider = LocationManager.GPS_PROVIDER;
+
     /**
-            * the MAC address for the chosen device
+     * the MAC address for the chosen device
      */
+    private TextView timeConnected;
     private String address;
     private ProgressDialog progressDialog;
     private BluetoothAdapter myBluetoothAdapter = null;
@@ -51,10 +70,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ((TextView) findViewById(R.id.statusTextView)).setText(getString(R.string.connection_status));
+        ((TextView) findViewById(R.id.statusTextView)).setText(getString(R.string.connection_status_off));
         Log.d(TAG, "device: " + getIntent().getStringExtra(EXTRA_DEVICE));
-        initTimer();
+        timeConnected = findViewById(R.id.timeTextView);
+        timeConnected.setText(getString(R.string.car_timer, "00", "00"));
+        preferences.setTimeConnected(0);
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         initBluetooth();
+        checkLocationPermission();
     }
 
     @Override
@@ -67,12 +90,123 @@ public class MainActivity extends AppCompatActivity {
                 new connectBT().execute();
             }
         }
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+
+            locationManager.requestLocationUpdates(provider, 400, 1, this);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+
+            locationManager.removeUpdates(this);
+        }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        sendData("C");
         disconnect();
+    }
+
+    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
+
+    public boolean checkLocationPermission() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+                new AlertDialog.Builder(this)
+                        .setTitle("R.string.title_location_permission")
+                        .setMessage("R.string.text_location_permission")
+                        .setPositiveButton("R.string.ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                //Prompt the user once explanation has been shown
+                                ActivityCompat.requestPermissions(MainActivity.this,
+                                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                        MY_PERMISSIONS_REQUEST_LOCATION);
+                            }
+                        })
+                        .create()
+                        .show();
+
+
+            } else {
+                // No explanation needed, we can request the permission.
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_LOCATION);
+            }
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // location-related task you need to do.
+                    if (ContextCompat.checkSelfPermission(this,
+                            Manifest.permission.ACCESS_FINE_LOCATION)
+                            == PackageManager.PERMISSION_GRANTED) {
+
+                        //Request location updates:
+                        locationManager.requestLocationUpdates(provider, 400, 1, this);
+                    }
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+
+                }
+                return;
+            }
+
+        }
+    }
+
+    private void getLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30000,
+                1, new LocationListener() {
+                    @Override
+                    public void onLocationChanged(@NonNull Location location) {
+
+                    }
+                });
     }
 
     private void initTimer() {
@@ -80,11 +214,17 @@ public class MainActivity extends AppCompatActivity {
         int time = 1;
         new CountDownTimer(time*60000, 1000) {
             public void onTick(long millisUntilFinished) {
-                Log.d(TAG,"seconds remaining: " + millisUntilFinished / 1000);
+                long timerSeconds = 60 - (millisUntilFinished / 1000);
+                Log.d(TAG,"seconds: " + timerSeconds);
+                int seconds = (int) timerSeconds;
+                int minutes = preferences.getTimeConnected() / 60;
+                preferences.setTimeConnected(minutes*60 + seconds);
+                timeConnected.setText(getString(R.string.car_timer, String.valueOf(minutes), String.valueOf(seconds)));
             }
 
             public void onFinish() {
                 Log.d(TAG,"Done!");
+                initTimer();
             }
         }.start();
     }
@@ -143,6 +283,26 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onLocationChanged(@NonNull Location location) {
+        ((TextView) findViewById(R.id.location_text)).setText(Html.fromHtml(getString(R.string.car_location, String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()))));
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(@NonNull String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(@NonNull String provider) {
+
+    }
+
     /**
      * An AysncTask to connect to Bluetooth socket
      */
@@ -197,6 +357,8 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 isBtConnected = true;
                 makeToast("Connected");
+                ((TextView) findViewById(R.id.statusTextView)).setText(getString(R.string.connection_status_on));
+                initTimer();
             }
             progressDialog.dismiss();
         }
