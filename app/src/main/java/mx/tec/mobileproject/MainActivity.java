@@ -114,6 +114,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         super.onStop();
         sendData("C");
         disconnect();
+        sendData("C");
     }
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
@@ -249,20 +250,36 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         findViewById(R.id.backButton).setOnClickListener(v -> {
             Log.d(TAG, "Back");
             sendData("B");
+            sendData("B");
+            sendData("B");
+            sendData("B");
+            sendData("B");
         });
 
         findViewById(R.id.frontButton).setOnClickListener(v -> {
             Log.d(TAG, "Front");
+            sendData("F");
+            sendData("F");
+            sendData("F");
+            sendData("F");
             sendData("F");
         });
 
         findViewById(R.id.leftButton).setOnClickListener(v -> {
             Log.d(TAG, "Left");
             sendData("L");
+            sendData("L");
+            sendData("L");
+            sendData("L");
+            sendData("L");
         });
 
         findViewById(R.id.rightButton).setOnClickListener(v -> {
             Log.d(TAG, "Right");
+            sendData("R");
+            sendData("R");
+            sendData("R");
+            sendData("R");
             sendData("R");
         });
     }
