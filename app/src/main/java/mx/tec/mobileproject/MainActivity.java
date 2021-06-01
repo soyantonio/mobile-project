@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         disconnect();
+        sendData("C");
     }
 
     private void initTimer() {
@@ -109,20 +110,36 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.backButton).setOnClickListener(v -> {
             Log.d(TAG, "Back");
             sendData("B");
+            sendData("B");
+            sendData("B");
+            sendData("B");
+            sendData("B");
         });
 
         findViewById(R.id.frontButton).setOnClickListener(v -> {
             Log.d(TAG, "Front");
+            sendData("F");
+            sendData("F");
+            sendData("F");
+            sendData("F");
             sendData("F");
         });
 
         findViewById(R.id.leftButton).setOnClickListener(v -> {
             Log.d(TAG, "Left");
             sendData("L");
+            sendData("L");
+            sendData("L");
+            sendData("L");
+            sendData("L");
         });
 
         findViewById(R.id.rightButton).setOnClickListener(v -> {
             Log.d(TAG, "Right");
+            sendData("R");
+            sendData("R");
+            sendData("R");
+            sendData("R");
             sendData("R");
         });
     }
